@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mikobot Image Generation (Test)</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<style>
+		.container {
+			margin-top: 50px;
+		}
+		h1 {
+			font-weight: bold;
+			text-align: center;
+			margin-bottom: 20px;
+		}
+		.form-group {
+			margin-bottom: 10px;
+		}
+		button {
+			margin-top: 10px;
+		}
+		.answer-container {
+			background-color: #f0f0f0;
+			border-radius: 5px;
+			padding: 10px;
+			margin-top: 20px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-md-8 col-lg-6">
+				<h1>Mikobot Image Generator</h1>
+				<div class="form-group">
+					<label for="promptInput">Masukkan prompt untuk menghasilkan gambar:</label>
+					<input type="text" id="promptInput" class="form-control">
+				</div>
+				<button type="button" class="btn btn-primary btn-block" onclick="generateImage()">Buat Gambar</button>
+				<div class="answer-container">
+					<img id="generatedImage" src="" style="max-width: 100%;">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/@openai/api"></script>
+	<script>
+		const openaiApiKey = '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';
+		const openaiApiEndpoint = 'https://api.openai.com/v1/images/generations';
+
+		async function generateImage() {
+			const promptInput = document.getElementById('promptInput');
+			const prompt = promptInput.value.trim();
+			if (prompt) {
+				const requestBody = {
+					model: 'image-alpha-001',
+					prompt: prompt,
+					size: '512x512'
+				};
+				const response = await fetch(openaiApiEndpoint, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + openaiApiKey
+					},
+					body: JSON.stringify(requestBody)
+				});
+				const responseData = await response.json();
+				const imageUrl = responseData.data[0].url;
+				const generatedImageElement = document.getElementById('generatedImage');
+				generatedImageElement.src = imageUrl;
+			}
+		}
+	</script>
+
+</body>
+</html>
